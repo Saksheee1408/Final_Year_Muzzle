@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cattle Registration & Verification System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .gov-logo {
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 20px;
+        }
+
+        .header-text h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 20px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: #f8f9ff;
+        }
+
+        .tab-btn.active {
+            background: #4f46e5;
+            color: white;
+            border-bottom-color: #3b82f6;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 40px 20px;
+            border: 3px dashed #d1d5db;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .file-upload-label:hover {
+            border-color: #4f46e5;
+            background: #f8f9ff;
+        }
+
+        .file-upload-label.dragover {
+            border-color: #4f46e5;
+            background: #f0f4ff;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .success-modal .modal-content {
+            border-top: 5px solid #10b981;
+        }
+
+        .error-modal .modal-content {
+            border-top: 5px solid #ef4444;
+        }
+
+        .cattle-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #4f46e5;
+            transition: all 0.3s ease;
+        }
+
+        .cattle-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .cattle-id {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .cattle-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .verification-result {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .confidence-meter {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .confidence-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(#10b981 0deg, #10b981 var(--percentage), #e5e7eb var(--percentage));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .match-status {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 0;
+        }
+
+        .match-confident {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .match-uncertain {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #f59e0b;
+        }
+
+        .no-match {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #4f46e5;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .cattle-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 12px;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="gov-logo">🐄</div>
+            <div class="header-text">
+                <h1>Cattle Registration & Verification System</h1>
+                <p>Ministry of Animal Husbandry and Dairying - Government of India</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('register')">Register Cattle</button>
+            <button class="tab-btn" onclick="switchTab('verify')">Verify Cattle</button>
+            <button class="tab-btn" onclick="switchTab('database')">View Database</button>
+            <button class="tab-btn" onclick="switchTab('dashboard')">Dashboard</button>
+        </div>
+
+        <!-- Registration Tab -->
+        <div id="register" class="tab-content active">
+            <h2 style="margin-bottom: 30px; color: #1e40af;">Register New Cattle</h2>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="ownerName">Owner Full Name *</label>
+                    <input type="text" id="ownerName" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ownerContact">Owner Contact Number *</label>
+                    <input type="tel" id="ownerContact" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="breed">Breed *</label>
+                    <select id="breed" class="form-control" required>
+                        <option value="">Select Breed</option>
+                        <option value="Holstein Friesian">Holstein Friesian</option>
+                        <option value="Jersey">Jersey</option>
+                        <option value="Gir">Gir</option>
+                        <option value="Sahiwal">Sahiwal</option>
+                        <option value="Red Sindhi">Red Sindhi</option>
+                        <option value="Tharparkar">Tharparkar</option>
+                        <option value="Kankrej">Kankrej</option>
+                        <option value="Ongole">Ongole</option>
+                        <option value="Hariana">Hariana</option>
+                        <option value="Cross Breed">Cross Breed</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age (in years) *</label>
+                    <input type="number" id="age" class="form-control" min="0" max="30" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Muzzle Image *</label>
+                    <div class="file-upload">
+                        <input type="file" id="muzzleImage" class="file-upload-input" accept="image/*" required>
+                        <label for="muzzleImage" class="file-upload-label" id="fileLabel">
+                            📷 Click to upload or drag and drop muzzle image<br>
+                            <small>Accepted formats: JPG, PNG, JPEG (Max 5MB)</small>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="registerBtn">
+                    Register Cattle
+                </button>
+            </form>
+        </div>
+
+        <!-- Verification Tab -->
+        <div id="verify" class="tab-content">
+            <h2 style="margin-bottom: 30px; color: #1e40af;">Verify Cattle Identity</h2>
+            
+            <form id="verificationForm">
+                <div class="form-group">
+                    <label>Upload Muzzle Image for Verification</label>
+                    <div class="file-upload">
+                        <input type="file" id="verifyImage" class="file-upload-input" accept="image/*" required>
+                        <label for="verifyImage" class="file-upload-label">
+                            🔍 Click to upload or drag and drop muzzle image<br>
+                            <small>The system will identify the cattle from this image</small>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="verifyBtn">
+                    Verify Cattle
+                </button>
+            </form>
+
+            <div id="verificationResult" style="display: none; margin-top: 30px;">
+                <!-- Results will be populated here -->
+            </div>
+        </div>
+
+        <!-- Database Tab -->
+        <div id="database" class="tab-content">
+            <h2 style="margin-bottom: 30px; color: #1e40af;">Registered Cattle Database</h2>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by Cattle ID (12-digit number)">
+            </div>
+
+            <div id="cattleList">
+                <!-- Cattle list will be populated here -->
+            </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content">
+            <h2 style="margin-bottom: 30px; color: #1e40af;">System Dashboard</h2>
+            
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats will be populated here -->
+            </div>
+
+            <div id="recentActivity">
+                <!-- Recent activity will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal success-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('successModal')">&times;</button>
+            <div id="successContent">
+                <!-- Success content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal error-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('errorModal')">&times;</button>
+            <div id="errorContent">
+                <!-- Error content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cattle Details Modal -->
+    <div id="cattleModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('cattleModal')">&times;</button>
+            <div id="cattleDetails">
+                <!-- Cattle details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+        
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab button
+            event.target.classList.add('active');
+            
+            // Load data for specific tabs
+            if (tabName === 'database') {
+                loadCattleDatabase();
+            } else if (tabName === 'dashboard') {
+                loadDashboard();
+            }
+        }
+
+        // File upload handling
+        document.addEventListener('DOMContentLoaded', function() {
+            setupFileUpload('muzzleImage', 'fileLabel');
+            setupFileUpload('verifyImage');
+            
+            // Load initial data
+            loadDashboard();
+        });
+
+        function setupFileUpload(inputId, labelId = null) {
+            const input = document.getElementById(inputId);
+            const label = labelId ? document.getElementById(labelId) : input.nextElementSibling;
+            
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    // Validate file size (5MB limit)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showError('File size must be less than 5MB');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        showError('Please select a valid image file');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    label.innerHTML = `✅ ${file.name}<br><small>File ready for upload</small>`;
+                    label.style.borderColor = '#10b981';
+                    label.style.background = '#ecfdf5';
+                }
+            });
+
+            // Drag and drop functionality
+            label.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            label.addEventListener('dragleave', function() {
+                this.classList.remove('dragover');
+            });
+
+            label.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    input.files = files;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+
+        // Registration form submission
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('owner_name', document.getElementById('ownerName').value);
+            formData.append('owner_contact', document.getElementById('ownerContact').value);
+            formData.append('breed', document.getElementById('breed').value);
+            formData.append('age', document.getElementById('age').value);
+            formData.append('file', document.getElementById('muzzleImage').files[0]);
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                showLoading(false);
+                
+                if (result.success) {
+                    showSuccess(`
+                        <h2 style="color: #10b981; margin-bottom: 20px;">✅ Cattle Registered Successfully!</h2>
+                        <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                            <h3 style="color: #1e40af; margin-bottom: 10px;">Cattle ID Generated</h3>
+                            <div style="font-size: 32px; font-weight: bold; color: #1e40af; letter-spacing: 2px; margin: 15px 0;">
+                                ${result.cattle_id}
+                            </div>
+                            <p style="color: #6b7280; font-size: 14px;">
+                                Please save this 12-digit Cattle ID for future reference
+                            </p>
+                        </div>
+                        <p style="margin-top: 20px;">The cattle has been successfully registered in the database and is now ready for verification.</p>
+                    `);
+                    
+                    // Reset form
+                    document.getElementById('registrationForm').reset();
+                    document.getElementById('fileLabel').innerHTML = '📷 Click to upload or drag and drop muzzle image<br><small>Accepted formats: JPG, PNG, JPEG (Max 5MB)</small>';
+                    document.getElementById('fileLabel').style.borderColor = '#d1d5db';
+                    document.getElementById('fileLabel').style.background = '#fafafa';
+                } else {
+                    showError(`Registration failed: ${result.error}`);
+                }
+            } catch (error) {
+                showLoading(false);
+                showError(`Network error: ${error.message}`);
+            }
+        });
+
+        // Verification form submission
+        document.getElementById('verificationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('file', document.getElementById('verifyImage').files[0]);
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/verify`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                showLoading(false);
+                
+                if (result.success) {
+                    displayVerificationResult(result);
+                } else {
+                    showError(`Verification failed: ${result.error}`);
+                }
+            } catch (error) {
+                showLoading(false);
+                showError(`Network error: ${error.message}`);
+            }
+        });
+
+        function displayVerificationResult(result) {
+            const resultDiv = document.getElementById('verificationResult');
+            let statusClass = '';
+            let statusText = '';
+            let confidenceColor = '#10b981';
+
+            switch(result.decision) {
+                case 'MATCH_CONFIDENT':
+                    statusClass = 'match-confident';
+                    statusText = 'Match Found - High Confidence';
+                    confidenceColor = '#10b981';
+                    break;
+                case 'MATCH_UNCERTAIN':
+                    statusClass = 'match-uncertain';
+                    statusText = 'Possible Match - Uncertain';
+                    confidenceColor = '#f59e0b';
+                    break;
+                default:
+                    statusClass = 'no-match';
+                    statusText = 'No Match Found';
+                    confidenceColor = '#ef4444';
+            }
+
+            const confidencePercentage = Math.round(result.confidence * 100);
+            
+            let html = `
+                <div class="verification-result">
+                    <div class="match-status ${statusClass}">${statusText}</div>
+                    <div class="confidence-meter">
+                        <div class="confidence-circle" style="--percentage: ${confidencePercentage * 3.6}deg; background: conic-gradient(${confidenceColor} 0deg, ${confidenceColor} ${confidencePercentage * 3.6}deg, #e5e7eb ${confidencePercentage * 3.6}deg);">
+                            ${confidencePercentage}%
+                        </div>
+                    </div>
+                    <p style="margin: 20px 0; font-size: 18px;">${result.message}</p>
+            `;
+
+            if (result.cattle_details) {
+                html += `
+                    <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin-top: 30px; text-align: left;">
+                        <h3 style="color: #1e40af; margin-bottom: 20px; text-align: center;">🐄 Cattle Details</h3>
+                        <div class="cattle-info">
+                            <div class="info-item">
+                                <span class="info-label">Cattle ID</span>
+                                <span class="info-value">${result.cattle_details.cattle_id}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Owner Name</span>
+                                <span class="info-value">${result.cattle_details.owner_name}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Owner Contact</span>
+                                <span class="info-value">${result.cattle_details.owner_contact}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Breed</span>
+                                <span class="info-value">${result.cattle_details.breed}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Age</span>
+                                <span class="info-value">${result.cattle_details.age} years</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Registration Date</span>
+                                <span class="info-value">${new Date(result.cattle_details.registration_date).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+        }
+
+        // Load cattle database
+        async function loadCattleDatabase() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/cattle`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayCattleList(result.cattle);
+                } else {
+                    document.getElementById('cattleList').innerHTML = '<p>Error loading cattle database</p>';
+                }
+            } catch (error) {
+                document.getElementById('cattleList').innerHTML = '<p>Network error loading database</p>';
+            }
+        }
+
+        function displayCattleList(cattleArray) {
+            const listDiv = document.getElementById('cattleList');
+            
+            if (cattleArray.length === 0) {
+                listDiv.innerHTML = '<p style="text-align: center; padding: 40px; color: #6b7280;">No cattle registered in database</p>';
+                return;
+            }
+
+            let html = '';
+            cattleArray.forEach(cattle => {
+                html += `
+                    <div class="cattle-card" onclick="showCattleDetails('${cattle.cattle_id}')">
+                        <div class="cattle-id">${cattle.cattle_id}</div>
+                        <div class="cattle-info">
+                            <div class="info-item">
+                                <span class="info-label">Owner</span>
+                                <span class="info-value">${cattle.owner_name}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Breed</span>
+                                <span class="info-value">${cattle.breed}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Age</span>
+                                <span class="info-value">${cattle.age} years</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Registered</span>
+                                <span class="info-value">${new Date(cattle.registration_date).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listDiv.innerHTML = html;
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.trim();
+            if (searchTerm.length === 0) {
+                loadCattleDatabase();
+                return;
+            }
+
+            const cattleCards = document.querySelectorAll('.cattle-card');
+            cattleCards.forEach(card => {
+                const cattleId = card.querySelector('.cattle-id').textContent;
+                if (cattleId.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Show cattle details
+        async function showCattleDetails(cattleId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/cattle/${cattleId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const cattle = result.cattle_info;
+                    document.getElementById('cattleDetails').innerHTML = `
+                        <h2 style="color: #1e40af; margin-bottom: 25px;">🐄 Cattle Details</h2>
+                        <div style="background: #f8fafc; padding: 25px; border-radius: 12px;">
+                            <div class="cattle-info">
+                                <div class="info-item">
+                                    <span class="info-label">Cattle ID</span>
+                                    <span class="info-value" style="font-size: 20px; color: #1e40af;">${cattle.cattle_id}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Owner Name</span>
+                                    <span class="info-value">${cattle.owner_name}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Owner Contact</span>
+                                    <span class="info-value">${cattle.owner_contact}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Breed</span>
+                                    <span class="info-value">${cattle.breed}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Age</span>
+                                    <span class="info-value">${cattle.age} years</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Registration Date</span>
+                                    <span class="info-value">${new Date(cattle.registration_date).toLocaleDateString()}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Status</span>
+                                    <span class="info-value" style="color: #10b981; text-transform: uppercase;">${cattle.status}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('cattleModal').classList.add('active');
+                } else {
+                    showError('Failed to load cattle details');
+                }
+            } catch (error) {
+                showError('Network error loading cattle details');
+            }
+        }
+
+        // Load dashboard
+        async function loadDashboard() {
+            try {
+                const [healthResponse, cattleResponse, logsResponse] = await Promise.all([
+                    fetch(`${API_BASE_URL}/health`),
+                    fetch(`${API_BASE_URL}/cattle`),
+                    fetch(`${API_BASE_URL}/verification-logs?limit=10`)
+                ]);
+
+                const health = await healthResponse.json();
+                const cattleData = await cattleResponse.json();
+                const logs = await logsResponse.json();
+
+                // Update stats
+                document.getElementById('statsGrid').innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${cattleData.success ? cattleData.cattle_count : 0}</div>
+                        <div class="stat-label">Registered Cattle</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${logs.success ? logs.logs.length : 0}</div>
+                        <div class="stat-label">Recent Verifications</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${health.model_loaded ? '✅' : '❌'}</div>
+                        <div class="stat-label">System Status</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${new Date().getFullYear()}</div>
+                        <div class="stat-label">Current Year</div>
+                    </div>
+                `;
+
+                // Show recent activity
+                if (logs.success && logs.logs.length > 0) {
+                    let activityHtml = '<h3 style="margin: 30px 0 20px; color: #1e40af;">Recent Verification Activity</h3>';
+                    logs.logs.forEach(log => {
+                        const date = new Date(log.verification_date).toLocaleString();
+                        const confidence = Math.round(log.confidence * 100);
+                        activityHtml += `
+                            <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #4f46e5;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span><strong>Cattle ID:</strong> ${log.matched_cattle_id}</span>
+                                    <span style="color: #6b7280; font-size: 14px;">${date}</span>
+                                </div>
+                                <div style="margin-top: 5px;">
+                                    <span style="color: #10b981;"><strong>Confidence:</strong> ${confidence}%</span>
+                                    <span style="margin-left: 20px; color: #4f46e5;"><strong>Decision:</strong> ${log.decision}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('recentActivity').innerHTML = activityHtml;
+                }
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Utility functions
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+
+        function showSuccess(content) {
+            document.getElementById('successContent').innerHTML = content;
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        function showError(message) {
+            document.getElementById('errorContent').innerHTML = `
+                <h2 style="color: #ef4444; margin-bottom: 20px;">❌ Error</h2>
+                <p style="margin-bottom: 20px;">${message}</p>
+                <button class="btn btn-secondary" onclick="closeModal('errorModal')">Close</button>
+            `;
+            document.getElementById('errorModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
